@@ -46,6 +46,7 @@ main {
 .imgPreview img {
   width: 90%;
   height: auto;
+  cursor: pointer;
 }
 
 
