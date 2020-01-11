@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
-const POINT_SIZE = 10
+const POINT_SIZE = 14
 const POINT = {
   width: POINT_SIZE,
   height: POINT_SIZE
 }
+const INIT_CLICK = {x:-1,y:-1}
 
 const App: React.FC = () => {
   // const [file, setFile] = useState('')
   const [imageFile, setImageFile] = useState<File|null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Labirinto_003.svg/860px-Labirinto_003.svg.png')
   const [imageData, setImageData] = useState<Uint8ClampedArray>()
-  const [click1, setClick1] = useState({x:-1,y:-1})
-  const [click2, setClick2] = useState({x:-1,y:-1})
+  const [click1, setClick1] = useState(INIT_CLICK)
+  const [click2, setClick2] = useState(INIT_CLICK)
   const [countClicks, setCountClicks] = useState(0)
   const incrementClick = () => setCountClicks(countClicks+1)
 
@@ -68,25 +69,54 @@ const App: React.FC = () => {
     file && reader.readAsDataURL(file)
   }
 
-  useEffect(()=>{
-    console.log(countClicks)
+  const getColorFromClick = (click:{x:number,y:number}):'white'|'black' => {
     const [canvas, ctx] = getCanvasCtx()
-    if (canvas && ctx && click1.x > 0){
-      const startX = click1.x - canvas.offsetLeft
-      const startY = click1.y - canvas.offsetTop
+    if (canvas && ctx && click.x > 0){
+      const startX = click.x - canvas.offsetLeft
+      const startY = click.y - canvas.offsetTop
       const pixelData = ctx.getImageData(startX, startY, 1,1).data
       // ctx.fillRect(startX-1,startY-1,2,2) // DEBUG
       console.log('pixelData!!', pixelData)
+      if(
+        pixelData[0] > 250 &&
+        pixelData[1] > 250 &&
+        pixelData[2] > 250 ||
+        pixelData[3] === 0
+      ){
+        return 'white'
+      }
     }
-  },[click1, click2])
+    return 'black'
+  }
 
   const clickImage = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
-    incrementClick()
-    setClick1({
+    const clickState = ['start', 'end', 'reset'][countClicks % 3] 
+    const click = {
       x: e.clientX,
       y: e.clientY
-    })
+    }
+    console.log('getColorFromClick(click)', getColorFromClick(click))
+    if(getColorFromClick(click) !== 'white' && clickState!=='reset') {
+      return // skip if you click in the wall
+    }
+    incrementClick()
+
+    switch (clickState) {
+      case 'start':
+        setClick1(click)
+        break;
+      case 'end':
+        setClick2(click)
+        break;
+      case 'reset':
+        setClick1(INIT_CLICK)
+        setClick2(INIT_CLICK)
+        break;
+    
+      default:
+        break;
+    }
   }
 
   return (
@@ -103,9 +133,13 @@ const App: React.FC = () => {
             />
         </form>
         <canvas onClick={clickImage} ref={canvasRef} id="image-canvas"></canvas>
-        {click1.x > 0 && <div className="point-click" style={{...POINT,
+        {click1.x > 0 && <div className="point-click point-start" style={{...POINT,
           top: click1.y-POINT_SIZE/2,
           left: click1.x-POINT_SIZE/2,
+        }}></div>}
+        {click2.x > 0 && <div className="point-click point-end" style={{...POINT,
+          top: click2.y-POINT_SIZE/2,
+          left: click2.x-POINT_SIZE/2,
         }}></div>}
       </main>
     </div>

@@ -55,6 +55,9 @@ main {
   background-color: green;
   position: absolute;
 }
+.point-click.point-end {
+  background-color: red;
+}
 
 #image-canvas {
   /* width: 80vw; */
