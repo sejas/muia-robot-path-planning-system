@@ -42,6 +42,7 @@ main {
 }
 .imgPreview {
   width: 100%;
+  display: none;
 }
 .imgPreview img {
   width: 90%;
@@ -53,4 +54,8 @@ main {
 .point-click {
   background-color: green;
   position: absolute;
+}
+
+#image-canvas {
+  width: 80vw;
 }
