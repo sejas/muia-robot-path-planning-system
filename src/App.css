@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+main {
+  width: 100%;
+}
+.imgPreview {
+  width: 100%;
+}
+.imgPreview img {
+  width: 90%;
+  height: auto;
+}
+
+
+.point-click {
+  background-color: green;
+  position: absolute;
+}
