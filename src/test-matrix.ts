@@ -4,8 +4,8 @@ var m = [
     0,Infinity,Infinity,0,0,0,
     0,Infinity,Infinity,0,0,0,
     0,Infinity,Infinity,0,0,0,
-    0,0,0,0,0,0,
-    0,0,0,0,0,0,
+    0,Infinity,Infinity,0,0,0,
+    0,Infinity,Infinity,0,0,0,
     0,0,0,0,0,0,
     ]
 
@@ -50,17 +50,13 @@ function grassFire(matrix, position){
         var i = point.i
         var j = point.j
         return [
-            // TOP ROW
-            // P(i-1,j-1),
+            // ROW ABOVE
             P(i-1,j),
-            // P(i-1,j+1),
             // CURRENT ROW
             P(i,j-1),
             P(i,j+1),
-            // NEXT ROW
-            // P(i+1,j-1),
+            // ROW BELOW
             P(i+1,j),
-            // P(i+1,j+1)
         ]
     }
     var startPoint = P_FROM_POS(position)
