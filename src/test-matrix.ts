@@ -1,3 +1,5 @@
+// STARTING GRASSFIRE ALGORITHM
+
 var m = [
     0,0,0,0,0,
     0,0,0,0,0,
