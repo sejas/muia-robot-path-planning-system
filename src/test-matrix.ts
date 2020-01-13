@@ -1,4 +1,12 @@
-var a = 4
+var m = [
+    0,0,0,0,0,
+    0,0,0,0,0,
+    0,0,0,0,0,
+    0,0,0,0,0,
+    0,0,0,0,0,
+    ]
+
+var a = Math.sqrt(m.length)
 var b = a
 function P(i,j){return {i,j}}
 function P_FROM_POS(x){
@@ -22,6 +30,13 @@ function printMatrix(m){
         console.log(row_elems)
     }
 }
+var visited_arr = [...m]
+function visited(position){
+    return visited_arr[position] === 1
+}
+function visit(position){
+    visited_arr[position] = 1
+}
 function r(matrix,position){
     var point = P_FROM_POS(position)
     var i = point.i
@@ -30,6 +45,7 @@ function r(matrix,position){
     if (!point_in_range(point)){
         return m
     }
+    visit(position)
     console.log('initpoint: ', P(i,j))
     var neighbours = [
         // TOP ROW
@@ -46,25 +62,49 @@ function r(matrix,position){
     ]
     neighbours.forEach(n => {
       var next = POS_FROM_POINT(n)
-      console.log('NEXT',n, next, n.i> 0 && n.i < a,  n.j> 0 && n.j < b,  0 === m[next])  
+    //   console.log('NEXT',n, next, n.i> 0 && n.i < a,  n.j> 0 && n.j < b,  0 === m[next])  
       if (  point_in_range(n) && 0 === m[next] ){
         m[next] = currentDistance + 1
       }
     });
-    printMatrix(m)
+    // printMatrix(m)
+    // return m
+    neighbours.forEach(n => {
+        var next = POS_FROM_POINT(n)
+        if (point_in_range(n) && !visited(next)){
+            return r(m,next)
+        }
+    })
     return m
 }
 
 
-var m = [
-0,0,0,0,
-0,0,0,0,
-0,0,0,0,
-0,0,0,0,
-]
 
-var START_POSITION = 10
+
+var START_POSITION = 24
 m[START_POSITION] = 1
-for(var position = START_POSITION; position<m.length; position++){
-    m = r(m, position)
+// for(var position = START_POSITION; position<m.length; position++){
+//     m = r(m, position)
+// }
+
+console.log('FINAL MATRIX : ')
+// printMatrix(r(m,START_POSITION))
+
+
+function mergeTwoMatrix(a,b){
+    return a.map((a_i, i) => {
+       return a_i || b[i] || 0
+    });
 }
+
+function mergeMatrixes(arr, acc = []){
+    if (arr.length === 0) {
+        return acc
+    }
+    acc = mergeTwoMatrix(arr.pop(), acc)
+    return mergeMatrixes(arr, acc)
+}
+
+// console.log(mergeTwoMatrix([1,2,3,4,0,0,0,0,0,0],[0,0,0,0,0,0,0,8,9,0]))
+
+console.log(mergeMatrixes([[1,2,3,4,0,0,0,0,0,0],[0,0,0,0,0,0,0,8,9,0]]))
