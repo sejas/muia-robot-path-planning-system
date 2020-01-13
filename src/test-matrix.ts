@@ -67,8 +67,8 @@ function r(matrix,position){
         console.log(DEV_TEXT, P(i,j))
         return m
     }
-    console.log('initpoint: ', P(i,j), position)
     visit(position)
+    console.log('initpoint: ', P(i,j), position)
     var neighbours = [
         // TOP ROW
         P(i-1,j-1),
@@ -90,15 +90,19 @@ function r(matrix,position){
         m[next] = currentDistance + 1
       }
     });
+
+    printMatrix(m)
+
     // printMatrix(m)
     return mergeMatrixes(
-        neighbours.map(n => 
-            r(m, POS_FROM_POINT(n))
+        neighbours.map(n =>{
+                return r(m, POS_FROM_POINT(n))
+            }
         )
     )
 }
 
-var START_POSITION = 12 // 24
+var START_POSITION = 2//12 // 24
 m[START_POSITION] = 1
 // for(var position = START_POSITION; position<m.length; position++){
 //     m = r(m, position)
