@@ -23,12 +23,23 @@ function POS_FROM_POINT(p){
 function point_in_range(n){
     return n.i>= 0 && n.i < a && n.j>= 0 && n.j < b
 }
-function printMatrix(m){
+function printMatrix(m, path = []){
+    var pathPositions = path.map(point => POS_FROM_POINT(point))
     for (var row = 0; row < a ;row++){
         var row_elems = []
         for (var col = 0; col < b ;col++){
             var next = row*a+col
-            row_elems.push(m[next])
+            var charToShow = m[next]
+            if(pathPositions.includes(next)){
+                charToShow = '-'
+            }
+            if(START_POSITION === next){
+                charToShow = 'S'
+            }else if(GOAL_POSITION === next){
+                charToShow = 'G'
+            }
+
+            row_elems.push(charToShow)
         }
         console.log(''+row_elems.map(e => e===Infinity?'x':e))
     }
@@ -116,5 +127,7 @@ console.log('FINAL MATRIX: ')
 printMatrix(grassFire(m, GOAL_POSITION))
 
 
-var START_POSITION = 5 // 24
-console.log('PATH: ', searchPath(m, START_POSITION, GOAL_POSITION))
+var START_POSITION = 0 // 24
+var path = searchPath(m, START_POSITION, GOAL_POSITION)
+console.log('PATH: ', path)
+printMatrix(m, path)
