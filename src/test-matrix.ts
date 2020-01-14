@@ -1,5 +1,6 @@
 // STARTING GRASSFIRE ALGORITHM
-
+var GOAL_POSITION = 3 // 24
+var START_POSITION = 0 // 24
 var m = [
     0,Infinity,Infinity,0,0,0,
     0,Infinity,Infinity,0,0,0,
@@ -122,12 +123,11 @@ function searchPath(grassFireMatrix, positionStart, positionGoal){
     return pathPoints
 }
 
-var GOAL_POSITION = 3 // 24
+// CALCULATE MATRIX
 console.log('FINAL MATRIX: ')
 printMatrix(grassFire(m, GOAL_POSITION))
 
-
-var START_POSITION = 0 // 24
+// CALCULATE PATH
 var path = searchPath(m, START_POSITION, GOAL_POSITION)
 console.log('PATH: ', path)
 printMatrix(m, path)
