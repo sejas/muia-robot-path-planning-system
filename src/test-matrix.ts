@@ -44,21 +44,21 @@ function visited_point(point){
 function visit(position){
     visited_arr[position] = Infinity
 }
-
+function getNeighbourPoints (point) {
+    var i = point.i
+    var j = point.j
+    return [
+        // UP
+        P(i-1,j),
+        // LEFT
+        P(i,j-1),
+        // RIGHT
+        P(i,j+1),
+        // DOWN
+        P(i+1,j),
+    ]
+}
 function grassFire(matrix, position){
-    function getNeighbourPoints (point) {
-        var i = point.i
-        var j = point.j
-        return [
-            // ROW ABOVE
-            P(i-1,j),
-            // CURRENT ROW
-            P(i,j-1),
-            P(i,j+1),
-            // ROW BELOW
-            P(i+1,j),
-        ]
-    }
     var startPoint = P_FROM_POS(position)
     var nextPointsToExplore = [startPoint]
 
@@ -78,7 +78,43 @@ function grassFire(matrix, position){
     return m
 }
 
+function searchPath(grassFireMatrix, positionStart, positionGoal){
+    var startPoint = P_FROM_POS(positionStart)
+    var goalPoint = P_FROM_POS(positionGoal)
+    var pathPoints = [startPoint]
 
-var START_POSITION = 3 // 24
-console.log('FINAL MATRIX2: ')
-printMatrix(grassFire(m, START_POSITION))
+    var goalReached = false
+    var isReachable = true
+
+    var currentPoint = startPoint
+    while (!goalReached && isReachable){
+        // var currentPosition = POS_FROM_POINT(currentPoint)
+        // visit(currentPosition)
+        // eslint-disable-next-line no-loop-func
+        var neighbours = getNeighbourPoints(currentPoint)
+        var distances = neighbours.map(n => {
+            if (point_in_range(n)){
+                return m[POS_FROM_POINT(n)]
+            }
+            return Infinity
+        })
+        var minDistanceIndex = distances.indexOf(Math.min(...distances))
+        currentPoint = neighbours[minDistanceIndex]
+        pathPoints.push(currentPoint)
+        if(currentPoint.i === goalPoint.i && currentPoint.j === goalPoint.j  ){
+            goalReached = true
+        }
+        console.log('neighbours', neighbours)
+        console.log('distances', distances)
+        console.log('min', currentPoint)
+    }
+    return pathPoints
+}
+
+var GOAL_POSITION = 3 // 24
+console.log('FINAL MATRIX: ')
+printMatrix(grassFire(m, GOAL_POSITION))
+
+
+var START_POSITION = 5 // 24
+console.log('PATH: ', searchPath(m, START_POSITION, GOAL_POSITION))
