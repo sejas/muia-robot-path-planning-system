@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import { getCanvasCtx, clickedInEmptySpace, imageDataToMap } from './utils/image-data';
 
 const POINT_SIZE = 14
-const POINT = {
+const POINT_STYLE = {
   width: POINT_SIZE,
   height: POINT_SIZE
 }
@@ -30,20 +31,10 @@ const App: React.FC = () => {
   const img = new Image()
   img.setAttribute('crossOrigin', 'anonymous')
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const getCanvasCtx = ():[HTMLCanvasElement|null, CanvasRenderingContext2D|null] => {
-    const canvas = canvasRef.current
-    if( canvas){
-      const ctx = canvas.getContext("2d")
-      if(ctx){
-        return [canvas, ctx]
-      }
-    }
-    return [null, null]
-  }
 
   const updateImageCanvas = (imagePreviewUrlParam='') => {
     // READ IMAGE AND SHOW IT IN CANVAS
-    const [canvas, ctx] = getCanvasCtx()
+    const [canvas, ctx] = getCanvasCtx(canvasRef)
     if(canvas && ctx && imagePreviewUrl){
         img.src = imagePreviewUrlParam || imagePreviewUrl
         canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
@@ -55,7 +46,8 @@ const App: React.FC = () => {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data
           setImageData(imageData)
-          console.log(JSON.stringify(imageData.length))
+          console.log(JSON.stringify(imageData))
+          console.log(JSON.stringify(imageDataToMap(imageData)))
         }, 500)
     }
   }
@@ -78,26 +70,6 @@ const App: React.FC = () => {
     file && reader.readAsDataURL(file)
   }
 
-  const getColorFromClick = (click:{x:number,y:number}):'white'|'black' => {
-    const [canvas, ctx] = getCanvasCtx()
-    if (canvas && ctx && click.x > 0){
-      const startX = click.x - canvas.offsetLeft
-      const startY = click.y - canvas.offsetTop
-      const pixelData = ctx.getImageData(startX, startY, 1,1).data
-      // ctx.fillRect(startX-1,startY-1,2,2) // DEBUG
-      console.log('pixelData!!', pixelData)
-      if(
-        (pixelData[0] > 250 &&
-        pixelData[1] > 250 &&
-        pixelData[2] > 250) ||
-        pixelData[3] === 0
-      ){
-        return 'white'
-      }
-    }
-    return 'black'
-  }
-
   const clickImage = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
     const clickState = ['start', 'end', 'reset'][countClicks % 3] 
@@ -105,8 +77,8 @@ const App: React.FC = () => {
       x: e.clientX,
       y: e.clientY
     }
-    console.log('getColorFromClick(click)', getColorFromClick(click))
-    if(getColorFromClick(click) !== 'white' && clickState!=='reset') {
+    console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
+    if(clickedInEmptySpace(canvasRef, click) && clickState!=='reset') {
       return // skip if you click in the wall
     }
     incrementClick()
@@ -142,11 +114,11 @@ const App: React.FC = () => {
             />
         </form>
         <canvas onClick={clickImage} ref={canvasRef} id="image-canvas"></canvas>
-        {click1.x > 0 && <div className="point-click point-start" style={{...POINT,
+        {click1.x > 0 && <div className="point-click point-start" style={{...POINT_STYLE,
           top: click1.y-POINT_SIZE/2,
           left: click1.x-POINT_SIZE/2,
         }}></div>}
-        {click2.x > 0 && <div className="point-click point-end" style={{...POINT,
+        {click2.x > 0 && <div className="point-click point-end" style={{...POINT_STYLE,
           top: click2.y-POINT_SIZE/2,
           left: click2.x-POINT_SIZE/2,
         }}></div>}
