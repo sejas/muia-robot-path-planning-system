@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import { getCanvasCtx, clickedInEmptySpace, imageDataToMap } from './utils/image-data';
+import { getCanvasCtx, clickedInEmptySpace, imageDataToMap, DistanceData, drawPath } from './utils/image-data';
+import { grassFire, searchPath } from './utils/grass-fire';
+import { Point } from './utils/point';
+import SizeMap from './utils/size-map';
 
 const POINT_SIZE = 14
 const POINT_STYLE = {
@@ -16,13 +19,14 @@ const EXAMPLE_IMAGES = [
   'maze.png',
 ]
 
-const MAX_CANVAS_WIDTH = 100
+const MAX_CANVAS_WIDTH = 25 //900
 
 const App: React.FC = () => {
   // const [file, setFile] = useState('')
   const [imageFile, setImageFile] = useState<File|null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState('img/'+EXAMPLE_IMAGES[0])
   const [imageData, setImageData] = useState<Uint8ClampedArray>()
+  const [grassFireMap, setGrassFireMap] = useState<DistanceData>()
   const [click1, setClick1] = useState(INIT_CLICK)
   const [click2, setClick2] = useState(INIT_CLICK)
   const [countClicks, setCountClicks] = useState(0)
@@ -46,8 +50,8 @@ const App: React.FC = () => {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data
           setImageData(imageData)
-          console.log(JSON.stringify(imageData))
-          console.log(JSON.stringify(imageDataToMap(imageData)))
+          // console.log(JSON.stringify(imageData))
+          SizeMap.getInstance().setSize(canvas.width, canvas.height)
         }, 500)
     }
   }
@@ -78,7 +82,7 @@ const App: React.FC = () => {
       y: e.clientY
     }
     console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
-    if(clickedInEmptySpace(canvasRef, click) && clickState!=='reset') {
+    if(!clickedInEmptySpace(canvasRef, click) && clickState!=='reset') {
       return // skip if you click in the wall
     }
     incrementClick()
@@ -89,6 +93,24 @@ const App: React.FC = () => {
         break;
       case 'end':
         setClick2(click)
+        if(imageData){
+          const mapData = imageDataToMap(imageData)
+          // console.log('mapData',JSON.stringify(mapData))
+          // const grassFireMap = grassFire(mapData, new Point(0,0))
+          const goalPoint = Point.FROM_CLICK(click, canvasRef.current as HTMLCanvasElement)
+          const grassFireMap = grassFire(mapData, goalPoint)
+          setGrassFireMap(grassFireMap)
+
+          console.log('grassFireMap', grassFireMap)
+          // CALCULATE PATH
+          const startPoint = Point.FROM_CLICK(click1, canvasRef.current as HTMLCanvasElement)
+          const pathPoints = searchPath(grassFireMap, startPoint, goalPoint)
+          console.log('pathPoints', pathPoints)
+          const [, ctx] = getCanvasCtx(canvasRef)
+          if (ctx){
+            drawPath(pathPoints, ctx)
+          }
+        }
         break;
       case 'reset':
         setClick1(INIT_CLICK)

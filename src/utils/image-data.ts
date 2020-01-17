@@ -1,16 +1,18 @@
+import { Path } from './grass-fire'
+
 // 4 elements of a pixel (RGBA)
 type R = number
 type G = number
 type B = number
 type A = number
-type PixelData = [R,G,B,A] | Uint8ClampedArray
+export type PixelData = [R,G,B,A] | Uint8ClampedArray
 // One dimension array where each pixel has 4 values (RGBA).
-type ImageData = Array<R|G|B|A> | Uint8ClampedArray
+export type ImageData = Array<R|G|B|A> | Uint8ClampedArray
 // One dimension array where each pixel has only 1 value (0|1).
-type MapData = Array<0|1>
+export type MapData = Array<0|1>
 // One dimension array where each pixel has only 1 value (0|1|Distance|Infinity).
-type Distance = 0|number
-type DistanceData = Array<Distance>
+export type Distance = 0|number
+export type DistanceData = Array<Distance>
 // It is always true that MapData.length == ImageData.length / 4
 
 /**
@@ -77,4 +79,19 @@ export const imageDataToMap = (imageData:ImageData):MapData => {
         map.push(mapPixel)
     }
     return map
+}
+
+export const drawPath = (path:Path, ctx:CanvasRenderingContext2D) => {
+  const imageData = ctx.createImageData(1, 1);
+  imageData.data[0] = 249 // R
+  imageData.data[1] = 166 // G
+  imageData.data[2] = 2 // B
+  imageData.data[3] = 1 // A
+  
+  if (path.length>0){
+    path.forEach(p => {
+      ctx.putImageData(imageData, p.i, p.j)
+      
+    });
+  }
 }
