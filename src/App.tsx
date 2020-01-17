@@ -81,7 +81,7 @@ const App: React.FC = () => {
       x: e.clientX,
       y: e.clientY
     }
-    console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
+    // console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
     if(!clickedInEmptySpace(canvasRef, click) && clickState!=='reset') {
       return // skip if you click in the wall
     }
@@ -108,11 +108,11 @@ const App: React.FC = () => {
         const grassFireMap = grassFire(mapData, goalPoint)
         setGrassFireMap(grassFireMap)
 
-        console.log('grassFireMap', grassFireMap)
+        // console.log('grassFireMap', grassFireMap)
         // CALCULATE PATH
         const startPoint = Point.FROM_CLICK(click1, canvasRef.current as HTMLCanvasElement)
         const pathPoints = searchPath(grassFireMap, startPoint, goalPoint)
-        console.log('pathPoints', pathPoints)
+        // console.log('pathPoints', pathPoints)
         drawPath(pathPoints, ctx)
         break;
       case 'reset':
