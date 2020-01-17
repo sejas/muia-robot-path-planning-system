@@ -8,10 +8,19 @@ const POINT = {
 }
 const INIT_CLICK = {x:-1,y:-1}
 
+const EXAMPLE_IMAGES = [
+  'labyrinth.png',
+  'prado.png',
+  'dioscuri.png',
+  'maze.png',
+]
+
+const MAX_CANVAS_WIDTH = 100
+
 const App: React.FC = () => {
   // const [file, setFile] = useState('')
   const [imageFile, setImageFile] = useState<File|null>(null)
-  const [imagePreviewUrl, setImagePreviewUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Labirinto_003.svg/860px-Labirinto_003.svg.png')
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('img/'+EXAMPLE_IMAGES[0])
   const [imageData, setImageData] = useState<Uint8ClampedArray>()
   const [click1, setClick1] = useState(INIT_CLICK)
   const [click2, setClick2] = useState(INIT_CLICK)
@@ -37,7 +46,7 @@ const App: React.FC = () => {
     const [canvas, ctx] = getCanvasCtx()
     if(canvas && ctx && imagePreviewUrl){
         img.src = imagePreviewUrlParam || imagePreviewUrl
-        canvas.width = window.innerWidth*0.9
+        canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
         setTimeout(()=>{
           const scale = canvas.width / img.width
           canvas.height = scale*img.height
@@ -46,7 +55,7 @@ const App: React.FC = () => {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data
           setImageData(imageData)
-          // console.log(JSON.stringify(imageData))
+          console.log(JSON.stringify(imageData.length))
         }, 500)
     }
   }
@@ -78,9 +87,9 @@ const App: React.FC = () => {
       // ctx.fillRect(startX-1,startY-1,2,2) // DEBUG
       console.log('pixelData!!', pixelData)
       if(
-        pixelData[0] > 250 &&
+        (pixelData[0] > 250 &&
         pixelData[1] > 250 &&
-        pixelData[2] > 250 ||
+        pixelData[2] > 250) ||
         pixelData[3] === 0
       ){
         return 'white'
