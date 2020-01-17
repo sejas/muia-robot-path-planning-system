@@ -95,8 +95,8 @@ export function searchPath(grassFireMatrix:DistanceData, startPoint:Point, goalP
         if(currentPoint.i === goalPoint.i && currentPoint.j === goalPoint.j  ){
             goalReached = true
         }
-        console.log('pathPoints', pathPoints.length)
-        if(pathPoints.length > 100000){
+        // SAFE PLACE
+        if(pathPoints.length > 500000){
             return []
         }
     }
