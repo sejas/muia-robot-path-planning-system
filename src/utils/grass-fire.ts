@@ -33,7 +33,7 @@ function visited_point(point:Point){
     return visited(point.position)
 }
 
-const isWall = (point:Point) => distance_arr[point.position] !== 0
+const isWall = (point:Point) => (distance_arr[point.position] === Infinity)
 
 /**
  * Calculate distance in a map following the GRASS FIRE ALGORITHM
@@ -96,7 +96,7 @@ export function searchPath(grassFireMatrix:DistanceData, startPoint:Point, goalP
             goalReached = true
         }
         console.log('pathPoints', pathPoints.length)
-        if(pathPoints.length > 1000){
+        if(pathPoints.length > 100000){
             return []
         }
     }

@@ -19,7 +19,7 @@ const EXAMPLE_IMAGES = [
   'maze.png',
 ]
 
-const MAX_CANVAS_WIDTH = 25 //900
+const MAX_CANVAS_WIDTH = 900
 
 const App: React.FC = () => {
   // const [file, setFile] = useState('')

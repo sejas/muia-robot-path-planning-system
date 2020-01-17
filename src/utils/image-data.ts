@@ -50,11 +50,12 @@ export const getPixelFromClick = (canvas:HTMLCanvasElement,ctx:CanvasRenderingCo
       return pixelData
 }
 export const pixelIsWhite = (pixelData:PixelData=[0,0,0,1]):boolean => {
+      const LEVEL = 255/2 +1
       if(
-        (pixelData[0] > 245 &&
-        pixelData[1] > 245 &&
-        pixelData[2] > 245) ||
-        pixelData[3] === 0
+        (pixelData[0] > LEVEL  &&
+        pixelData[1] > LEVEL &&
+        pixelData[2] > LEVEL) ||
+        pixelData[3] < LEVEL
       ){
         return true
       }
@@ -82,15 +83,18 @@ export const imageDataToMap = (imageData:ImageData):MapData => {
 }
 
 export const drawPath = (path:Path, ctx:CanvasRenderingContext2D) => {
-  const imageData = ctx.createImageData(1, 1);
-  imageData.data[0] = 249 // R
-  imageData.data[1] = 166 // G
-  imageData.data[2] = 2 // B
-  imageData.data[3] = 1 // A
+  const WIDTH_STROKE = 3
+  const imageData = ctx.createImageData(WIDTH_STROKE, WIDTH_STROKE);
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    imageData.data[i+0] = 249 // R
+    imageData.data[i+1] = 166 // G
+    imageData.data[i+2] = 2 // B
+    imageData.data[i+3] = 255 // A 
+  }
   
   if (path.length>0){
     path.forEach(p => {
-      ctx.putImageData(imageData, p.i, p.j)
+      ctx.putImageData(imageData, p.j, p.i)
       
     });
   }

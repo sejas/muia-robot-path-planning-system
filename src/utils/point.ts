@@ -19,8 +19,8 @@ export class Point {
         return new Point(i, j)
     }
     static FROM_CLICK(click:Click, canvas:HTMLCanvasElement){
-        const i = click.x-canvas.offsetLeft
-        const j = click.y-canvas.offsetTop
+        const i = click.y-canvas.offsetTop
+        const j = click.x-canvas.offsetLeft
         return new Point(i,j)
     }
 
