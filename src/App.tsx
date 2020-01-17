@@ -5,7 +5,7 @@ import { grassFire, searchPath } from './utils/grass-fire';
 import { Point } from './utils/point';
 import SizeMap from './utils/size-map';
 
-const POINT_SIZE = 14
+const POINT_SIZE = 12
 const POINT_STYLE = {
   width: POINT_SIZE,
   height: POINT_SIZE
