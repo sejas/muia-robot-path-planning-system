@@ -73,8 +73,8 @@ export function searchPath(grassFireMatrix:DistanceData, startPoint:Point, goalP
     let isReachable = true
     let currentPoint = startPoint
 
-    console.log('searchPath START: ', startPoint, grassFireMatrix[startPoint.position])
-    console.log('searchPath GOAL: ', goalPoint, grassFireMatrix[goalPoint.position])
+    // console.log('searchPath START: ', startPoint, grassFireMatrix[startPoint.position])
+    // console.log('searchPath GOAL: ', goalPoint, grassFireMatrix[goalPoint.position])
     if(grassFireMatrix[startPoint.position] === 0 ){
        alert('GOAL POINT IS NOT REACHABLE')
        return []
@@ -112,7 +112,7 @@ export function printMatrix(m:DistanceData, GOAL_POSITION=-1, START_POSITION=-1,
     if(m.length>625){
         return null
     }
-    console.log('=============')
+    // console.log('=============')
     var pathPositions = path.map(point => point.position)
     const a = SizeMap.getInstance().a
     const b = SizeMap.getInstance().b
@@ -131,6 +131,6 @@ export function printMatrix(m:DistanceData, GOAL_POSITION=-1, START_POSITION=-1,
             }
             row_elems.push(charToShow)
         }
-        console.log(''+row_elems.map(e => e==='Infinity'?'XX':e))
+        // console.log(''+row_elems.map(e => e==='Infinity'?'XX':e))
     }
 }

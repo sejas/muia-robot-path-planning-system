@@ -40,9 +40,7 @@ const App: React.FC = () => {
     // READ IMAGE AND SHOW IT IN CANVAS
     const [canvas, ctx] = getCanvasCtx(canvasRef)
     if(canvas && ctx && imagePreviewUrl){
-        img.src = imagePreviewUrlParam || imagePreviewUrl
-        canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
-        setTimeout(()=>{
+        const imageLoaded = ()=>{
           const scale = canvas.width / img.width
           canvas.height = scale*img.height
           ctx.clearRect(0,0, canvas.width, canvas.height)
@@ -52,7 +50,11 @@ const App: React.FC = () => {
           setImageDataFromCanvas(imageDataFromCanvas)
           // console.log(JSON.stringify(imageData))
           SizeMap.getInstance().setSize(canvas.width, canvas.height)
-        }, 500)
+        }
+
+        img.src = imagePreviewUrlParam || imagePreviewUrl
+        canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
+        img.onload = imageLoaded
     }
   }
   useEffect(updateImageCanvas, [])
@@ -81,7 +83,7 @@ const App: React.FC = () => {
       x: e.clientX,
       y: e.clientY
     }
-    console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
+    // console.log('clickedInEmptySpace(click)', clickedInEmptySpace(canvasRef, click))
     if(!clickedInEmptySpace(canvasRef, click) && clickState!=='reset') {
       return // skip if you click in the wall
     }
@@ -108,11 +110,11 @@ const App: React.FC = () => {
         const grassFireMap = grassFire(mapData, goalPoint)
         setGrassFireMap(grassFireMap)
 
-        console.log('grassFireMap', grassFireMap)
+        // console.log('grassFireMap', grassFireMap)
         // CALCULATE PATH
         const startPoint = Point.FROM_CLICK(click1, canvasRef.current as HTMLCanvasElement)
         const pathPoints = searchPath(grassFireMap, startPoint, goalPoint)
-        console.log('pathPoints', pathPoints)
+        // console.log('pathPoints', pathPoints)
         drawPath(pathPoints, ctx)
         break;
       case 'reset':
