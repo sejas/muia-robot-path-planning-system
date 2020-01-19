@@ -40,9 +40,7 @@ const App: React.FC = () => {
     // READ IMAGE AND SHOW IT IN CANVAS
     const [canvas, ctx] = getCanvasCtx(canvasRef)
     if(canvas && ctx && imagePreviewUrl){
-        img.src = imagePreviewUrlParam || imagePreviewUrl
-        canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
-        setTimeout(()=>{
+        const imageLoaded = ()=>{
           const scale = canvas.width / img.width
           canvas.height = scale*img.height
           ctx.clearRect(0,0, canvas.width, canvas.height)
@@ -52,7 +50,11 @@ const App: React.FC = () => {
           setImageDataFromCanvas(imageDataFromCanvas)
           // console.log(JSON.stringify(imageData))
           SizeMap.getInstance().setSize(canvas.width, canvas.height)
-        }, 500)
+        }
+
+        img.src = imagePreviewUrlParam || imagePreviewUrl
+        canvas.width = Math.min(window.innerWidth*0.8, MAX_CANVAS_WIDTH)
+        img.onload = imageLoaded
     }
   }
   useEffect(updateImageCanvas, [])

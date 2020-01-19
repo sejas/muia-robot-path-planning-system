@@ -39,7 +39,7 @@ export const clickedInEmptySpace = (canvasRef:React.RefObject<HTMLCanvasElement>
     const [canvas, ctx] = getCanvasCtx(canvasRef)
     if (canvas && ctx && click.x > 0){
         const pixelData = getPixelFromClick(canvas, ctx, click)
-        return pixelIsWhite(pixelData)
+        return pixelIsWhite(pixelData, false)
       }
       return false
 }
@@ -49,7 +49,10 @@ export const getPixelFromClick = (canvas:HTMLCanvasElement,ctx:CanvasRenderingCo
       const pixelData = ctx.getImageData(startX, startY, 1,1).data
       return pixelData
 }
-export const pixelIsWhite = (pixelData:PixelData=[0,0,0,1]):boolean => {
+export const pixelIsWhite = (pixelData:PixelData=[0,0,0,1], logger=false):boolean => {
+      if(logger){
+        console.log('pixelData', pixelData)
+      }
       const LEVEL = 255/3
       if(
         (pixelData[0] > LEVEL  ||
